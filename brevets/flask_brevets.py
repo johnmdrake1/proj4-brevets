@@ -57,8 +57,8 @@ def _calc_times():
     app.logger.debug("request.args: {}".format(request.args))
     # FIXME: These probably aren't the right open and close times
     # and brevets may be longer than 200km
-    open_time = acp_times.open_time(km, 200, arrow.now().isoformat)
-    close_time = acp_times.close_time(km, 200, arrow.now().isoformat)
+    open_time = acp_times.open_time(km,200,"2017-10-20T01:00")
+    close_time = acp_times.close_time(km,200,"2017-10-20T01:00")
     result = {"open": open_time, "close": close_time}
     return flask.jsonify(result=result)
 
