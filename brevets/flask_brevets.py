@@ -60,12 +60,14 @@ def _calc_times():
     app.logger.debug("km={}".format(km))
     app.logger.debug("request.args: {}".format(request.args))
     print(brevet_dist_km)
-    print(begin_date)
+    print(str(begin_date))
     print(begin_time)
+    print(str(begin_date) + "T" + begin_time)
+    begin_date_time = (str(begin_date) + "T" + begin_time)
     # FIXME: These probably aren't the right open and close times
     # and brevets may be longer than 200km
-    open_time = acp_times.open_time(km,brevet_dist_km,"2017-10-20T00:00")
-    close_time = acp_times.close_time(km,brevet_dist_km,"2017-10-20T00:00")
+    open_time = acp_times.open_time(km,brevet_dist_km, begin_date_time)
+    close_time = acp_times.close_time(km,brevet_dist_km,begin_date_time)
     result = {"open": open_time, "close": close_time}
     return flask.jsonify(result=result)
 

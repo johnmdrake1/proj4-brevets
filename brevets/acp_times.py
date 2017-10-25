@@ -38,7 +38,7 @@ def open_time(control_dist_km, brevet_dist_km, brevet_start_time):
 
 
 
-
+    #TABLE DRIVEN DESIGN
     initialtime = arrow.get(brevet_start_time)
 
     #incdict = {">200": (200/34), ">400": (200/32), ">600": (200/30), ">1000": (400/28)}
@@ -73,7 +73,7 @@ def open_time(control_dist_km, brevet_dist_km, brevet_start_time):
 
 
 
-
+      #OLD, MESSY, BUT FUNCTIONAL DESIGN BELOW:
 
     
     # first = 200 / 34
@@ -133,7 +133,7 @@ def close_time(control_dist_km, brevet_dist_km, brevet_start_time):
     """
 
     initialtime = arrow.get(brevet_start_time)
-
+    #MODIFIED TABLE DRIVEN DESIGN FROM open_time
 
     #incdict = {">200": (200/34), ">400": (200/32), ">600": (200/30), ">1000": (400/28)}
     exdict = {200:13.5, 400:27, 600:40, 1000:75}
