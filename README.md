@@ -1,65 +1,97 @@
 # Project 4:  Brevet time calculator with Ajax
 
-Reimplement the RUSA ACP controle time calculator with flask and ajax
 
-## ACP controle times
 
-That's "controle" with an 'e', because it's French, although "control"
-is also accepted.  Controls are points where   
-a rider must obtain proof of passage, and control[e] times are the
-minimum and maximum times by which the rider must  
-arrive at the location.   
+README:
 
-The algorithm for calculating controle times is described at
-https://rusa.org/octime_alg.html .  Additional background information
-is in https://rusa.org/pages/rulesForRiders . The description is ambiguous,
-but the examples help.  Part of finishing this project is clarifying
-anything that is not clear about the requirements, and documenting it
-clearly.  
+Author: John Drake
+github repo: https://github.com/johnmdrake1/proj4-brevets
+github profile: https://github.com/johnmdrake1/
 
-We are essentially replacing the calculator at
-https://rusa.org/octime_acp.html .  We can also use that calculator
-to clarify requirements and develop test data.  
+Description: An ACP time calculator for brevets and their controles, written as a reimplementation of the calculator at 
+https://rusa.org/octime_acp.html. This reimplementation is accomplished through a client-server relationship,
+and is utilized through a webpage which has several inputs and outputs connected to it.
 
-## AJAX and Flask reimplementation
+Functionality, and other information for users of the calculator:
+Once the server has been started(as described below), connecting to it will display an HTML web page with several spaces for 
+input and output of information. 
 
-The current RUSA controle time calculator is a Perl script that takes
-an HTML form and emits a text page. The reimplementation will fill in
-times as the input fields are filled.  Each time a distance is filled
-in, the corresponding open and close times should be filled in.   
+At the top of the page, a dropdown list labeled 'Distance' allows the user to select the total distance of their brevet
+that they wish to calculate controles for. Brevet distances can be 200, 300, 400, 600, and 1000 according to official rules.
+The final controle in a brevet can be slightly greater than the total distance of the brevet(e.g. controle at 605km on a 600km brevet)
+and the calculator accounts for this possibility and adjusts values accordingly to maintain accordance to brevet rules relevant 
+to the situation. The 'Distance' box must be accurate, as certain controle distances depend on brevet distance to determine 
+their open and close times accurately. 
 
-I will leave much of the design to you.   
+Also at the top of the page are date and time boxes. The value entered here must be the starting date and time of the brevet, 
+so the calculator can return both the date and time of controle openings and closings. NOTE: In practice the calculator uses
+a 24 hour time format for its functionality, but choice of browser may affect how the date and time input boxes are
+displayed. Adjust accordingly should this be the case. 
 
-## Testing
+Once this information has been inputted and is in place, the user can start entering brevet controle distances. These may be 
+entered either in the 'Miles' or 'Km' columns for each controle entered. The calculator will perform and display the necessary
+conversions regardless of what measurement is used. Optionally, a location for each inputted brevet may be specified, but this
+will not affect calculator performance. 
 
-A suite of nose test cases is a requirement of this project.  Design
-the test cases based on an interpretation of rules at
-https://rusa.org/octime_alg.html .  Be sure to test your test
-cases:  You can use the current brevet time calculator (
-https://rusa.org/octime_acp.html ) to check that your expected test
-outputs are correct. While checking these values once is a manual
-operation, re-running your test cases should be automated in the usual
-manner as a Nose test suite.
+Once a controle distance has been inputted, pressing the enter key will populate the 'Open' and 'Close' time fields for 
+the row that controle was entered in. Note that this should display in 24-hour format. As each controle is computed individually,
+it is not necessary to input all of the controles for a given brevet to see the information about that controle(this is not
+the case in the official ACP calculator, however).
 
-To make automated testing more practical, your open and close time
-calculations should be in a separate module.  Because I want to be 
-able to use my test suite as well as yours, I will require that 
-module be named acp_times.py and contain the two functions I have 
-included in the skeleton code (though revised, of course, to 
-return correct results).
+The rules state a specific maximum close time for each brevet length. Due to this, all values that exceed the chosen brevet length
+will correspond to this same specific value, (e.g. controles 200, 205, and 210 for a 200km brevet). 
 
-With your virtual environment activated, we should be able to run your
-test suite by changing to the "brevets" directory and typinng
-"nosetests".   All tests should pass.  You should have at least 5
-test cases, and more importantly, your test cases should be chosen to
-distinguish between an implementation that correctly interprets the
-ACP rules and one that does not.
+Refreshing the page should reset the calculator if information about a different brevet is desired. Restarting the server is not
+necessary for this functionality.
 
-## Replace this README
+Instructions for Developers and starting the server:
 
-This README is currently written primarily as instructions to CIS 322
-students.  Replace it with a proper README for an ACP time
-calculator.  Think about what should be included for users and for
-developers.  If it is growing too long, factor details into one or
-more separate documents, with references from the README.
+Information about relevant source files and their communication:
+Technologies such as AJAX and flask are used to handle the client-server relationship for inputting and outputting data.
+Information inputted in the fields contained in calc.html is sent to flask_brevets.py so it can be used. In flask_brevets.py,
+the functions from acp_times.py are called using these inputs and their outputs are passed back to the html for their display
+to the user. 
+
+There are two such functions in acp_times.py, and they are solely responsible for the calculations themselves(of controle open
+and close times based on a brevet distance and controle distance). 
+
+open_time and close_time use the same 3 arguments:
+1. The distance to the controle(value inputted in text entry field)
+2. The total brevet distance(value from dropdown menu)
+3. The starting date and time(value entered in the appropriate date/time fields)
+
+The opening and closing times are computed using a table driven approach, indexing data structures that define values relevant 
+to certain ranges of user inputs. Little is changed between open_time and closing_time, as the differences mainly consist
+of different table values.
+
+
+-Commands:
+Note: credentials.ini must be placed in the brevets directory.
+1. 'cd' to local directory with calculator files
+2. 'make install' (installs all necessary modules and technologies for source code to function, and creates virtual environment)
+3. 'make start' will start the server(in the virtual environment).
+4. The calculator can now be accessed at 'http://localhost:8000/' from within a client such as a web browser.
+5. Server will continue to run until command 'make stop' is entered. This will stop the server.
+
+Testing: 
+Once cd into project directory:
+'make test' will run a python nosetest suite contained within brevets/test_acp_times.py
+The command prompt should output the following:
+----------------------------------------------
+Ran 5 tests in x.xxx seconds
+
+OK
+----------------------------------------------
+If anything about failure appears, one of the assertions in the test failed to match the expected value.
+
+Test details:
+test_acp_times.py defines 5 functions that utilize nose testing. Each of these functions will test several possible 
+cases and many combinations of input/output values. Each function serves a unique purpose, described in code comments in the test
+suite file.
+Outputted times may not always be rounded to the proper minute(i.e. the minute the official ACP calculator settles on) but 
+the date and hour should be exactly the same. When there are errors in minute output they should only be +-1. A function 'nearly(x,y)' 
+takes an output and its expected value and compares the dates and hours for equivalency, while making sure the minute falls within
+the expected error range. All test cases simply call the 'nearly' function.
+
+
 
